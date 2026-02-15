@@ -1,6 +1,6 @@
 {
   "key.cinematiczoom.zoom": "Cinematic Zoom",
-  "key.categories.cinematiczoom": "Cinematic Zoom",
+  "key.category.cinematiczoom.main": "Cinematic Zoom",
 
   "modmenu.descriptionTranslation.cinematiczoom": "Smooth zoom with cinematic black bars and per-frame easing.",
   "modmenu.summaryTranslation.cinematiczoom": "Cinematic zoom with black bars.",
