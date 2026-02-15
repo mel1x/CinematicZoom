@@ -1,4 +1,4 @@
-# CinematicZoom (Fabric 1.21.7)
+# CinematicZoom (Fabric 1.21.11)
 
 Smooth, cinematic zoom for Minecraft with animated black bars, per-frame easing, and optional mouse wheel control. Built for **Fabric 1.21.7**.
 
@@ -27,7 +27,7 @@ Smooth, cinematic zoom for Minecraft with animated black bars, per-frame easing,
 
 ## Installation
 
-1. Install Fabric Loader & Fabric API for **Minecraft 1.21.7**.
+1. Install Fabric Loader & Fabric API for **Minecraft 1.21.11**.
 2. Put this mod’s JAR into your `mods/` folder.
 3. (Optional) Add **Mod Menu** and **Cloth Config** for an in-game settings UI.
 
@@ -53,3 +53,18 @@ If **Mod Menu** + **Cloth Config** are installed:
 
 ### Config file
 Edit (or delete to regenerate defaults):
+
+---
+
+## Credits & Attribution
+
+- **Original author & idea credit:** [KubePixel](https://www.curseforge.com/members/kubepixel/projects)  
+  Their Forge mod for 1.20.1/1.21.1: **Cinematic Zoom** — <https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom>
+
+- **Fabric implementation (this mod):** mix
+
+> This project is an independent Fabric implementation inspired by the original concept. Not affiliated with or endorsed by KubePixel.
+
+---
+
+*Original concept and name credit to **KubePixel**. If you’re on Forge 1.20.1/1.21.1, check out their original mod here: <https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom>.*
