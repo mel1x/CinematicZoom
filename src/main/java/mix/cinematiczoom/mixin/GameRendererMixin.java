@@ -12,19 +12,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
-    @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F",
+    @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)D",
             at = @At("RETURN"), cancellable = true)
     private void cinematiczoom$applyZoom(Camera camera, float tickDelta, boolean changingFov,
-                                         CallbackInfoReturnable<Float> cir) {
+                                         CallbackInfoReturnable<Double> cir) {
         ZoomManager.frameUpdate();
 
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.currentScreen != null) return;
 
-        float fov = cir.getReturnValue();
+        double fov = cir.getReturnValue();
         double mul = ZoomManager.getCurrentFovMul();
         if (mul != 1.0) {
-            cir.setReturnValue((float) (fov * mul));
+            cir.setReturnValue(fov * mul);
         }
     }
 }
