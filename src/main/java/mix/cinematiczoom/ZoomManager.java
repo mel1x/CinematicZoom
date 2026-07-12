@@ -1,8 +1,8 @@
 package mix.cinematiczoom;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.KeyMapping;
 
 public class ZoomManager {
 
@@ -20,9 +20,9 @@ public class ZoomManager {
     private static Boolean prevHudHidden = null;
     private static Boolean prevSmoothCamera = null;
 
-    public static void tick(MinecraftClient client, KeyBinding key) {
-        boolean inScreen = client.currentScreen != null;
-        boolean wantZoom = key.isPressed() && !inScreen;
+    public static void tick(Minecraft client, KeyMapping key) {
+        boolean inScreen = client.screen != null;
+        boolean wantZoom = key.isDown() && !inScreen;
 
         boolean starting = wantZoom && !zoomHeld;
         boolean ending   = !wantZoom && zoomHeld;
@@ -34,25 +34,25 @@ public class ZoomManager {
 
             // Прячем HUD/прицел
             if (ZoomConfig.INSTANCE.hideHudDuringZoom) {
-                prevHudHidden = client.options.hudHidden;
-                client.options.hudHidden = true;
+                prevHudHidden = client.options.hideGui;
+                client.options.hideGui = true;
             }
             // Включаем кинематографичную камеру
             if (ZoomConfig.INSTANCE.enableCinematicCamera) {
-                prevSmoothCamera = client.options.smoothCameraEnabled;
-                client.options.smoothCameraEnabled = true;
+                prevSmoothCamera = client.options.smoothCamera;
+                client.options.smoothCamera = true;
             }
         }
 
         if (ending) {
             // Вернуть HUD
             if (prevHudHidden != null) {
-                client.options.hudHidden = prevHudHidden;
+                client.options.hideGui = prevHudHidden;
                 prevHudHidden = null;
             }
             // Вернуть камеру
             if (prevSmoothCamera != null) {
-                client.options.smoothCameraEnabled = prevSmoothCamera;
+                client.options.smoothCamera = prevSmoothCamera;
                 prevSmoothCamera = null;
             }
         }
@@ -105,11 +105,11 @@ public class ZoomManager {
         return true;
     }
 
-    public static void renderBars(DrawContext ctx) {
+    public static void renderBars(GuiGraphicsExtractor ctx) {
         if (currentBarsPct <= 0.0001f) return;
 
-        int sw = ctx.getScaledWindowWidth();
-        int sh = ctx.getScaledWindowHeight();
+        int sw = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        int sh = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
         int h = Math.round(sh * (currentBarsPct / 100f));
         if (h <= 0) return;

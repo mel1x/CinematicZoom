@@ -4,8 +4,10 @@
 	"package": "mix.cinematiczoom.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
- 		  "GameRendererMixin",
- 		  "MouseMixin",
+ 		  "CameraMixin",
+    "MouseMixin",
+    "OptionsMixin",
+    "MinecraftMixin",
 		  "InGameHudMixin"
  		],
 	"injectors": {
