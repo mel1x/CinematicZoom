@@ -17,17 +17,17 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": ["mix.cinematiczoom.CinematicZoomClient"],
-    	"modmenu": ["mix.cinematiczoom.integrations.ModMenuIntegration"]
+		"modmenu": ["mix.cinematiczoom.integrations.ModMenuIntegration"]
 	},
 	"mixins": [
 		"cinematiczoom.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
-		"minecraft": ">=1.21.7 <1.21.11",
-		"java": ">=21",
+		"minecraft": "1.20.1",
+		"java": ">=17",
 		"fabric-api": "*",
-		"cloth-config2": ">=19.0.147"
+		"cloth-config2": ">=11.1.136"
 	},
 	"suggests": {
 		"modmenu": "*"

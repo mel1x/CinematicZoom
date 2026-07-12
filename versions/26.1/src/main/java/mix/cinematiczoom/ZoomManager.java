@@ -1,131 +1,83 @@
 package mix.cinematiczoom;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.KeyMapping;
 
-public class ZoomManager {
+public final class ZoomManager {
+    private static final ZoomController ZOOM = new ZoomController();
 
-    private static boolean zoomHeld = false;
+    private static boolean hudForcedByUs;
+    private static boolean smoothCameraForcedByUs;
 
-    private static float currentZoomMul = 1.0f;
-    private static float targetZoomMul = 1.0f;
-    private static float holdZoomMul = ZoomConfig.INSTANCE.baseZoomMultiplier;
-
-    private static float currentBarsPct = 0f;
-    private static float targetBarsPct = 0f;
-
-    private static long lastNs = 0L;
-
-    private static Boolean prevHudHidden = null;
-    private static Boolean prevSmoothCamera = null;
+    private ZoomManager() {
+    }
 
     public static void tick(Minecraft client, KeyMapping key) {
-        boolean inScreen = client.screen != null;
-        boolean wantZoom = key.isDown() && !inScreen;
+        boolean canZoom = client.level != null
+                && client.player != null
+                && client.screen == null
+                && client.isWindowActive();
+        boolean wantZoom = key.isDown() && canZoom;
 
-        boolean starting = wantZoom && !zoomHeld;
-        boolean ending   = !wantZoom && zoomHeld;
-
-        if (starting) {
-            holdZoomMul = clamp(ZoomConfig.INSTANCE.baseZoomMultiplier,
-                    ZoomConfig.INSTANCE.minZoomMultiplier,
-                    ZoomConfig.INSTANCE.maxZoomMultiplier);
-
-            // Прячем HUD/прицел
-            if (ZoomConfig.INSTANCE.hideHudDuringZoom) {
-                prevHudHidden = client.options.hideGui;
-                client.options.hideGui = true;
-            }
-            // Включаем кинематографичную камеру
-            if (ZoomConfig.INSTANCE.enableCinematicCamera) {
-                prevSmoothCamera = client.options.smoothCamera;
-                client.options.smoothCamera = true;
-            }
+        if (ZOOM.update(wantZoom)) {
+            acquireOverrides(client);
         }
-
-        if (ending) {
-            // Вернуть HUD
-            if (prevHudHidden != null) {
-                client.options.hideGui = prevHudHidden;
-                prevHudHidden = null;
-            }
-            // Вернуть камеру
-            if (prevSmoothCamera != null) {
-                client.options.smoothCamera = prevSmoothCamera;
-                prevSmoothCamera = null;
-            }
+        if (!wantZoom) {
+            // Release even when a key-up transition was missed.
+            releaseOverrides(client);
         }
+    }
 
-        zoomHeld = wantZoom;
-
-        targetZoomMul = zoomHeld ? holdZoomMul : 1.0f;
-        targetBarsPct = zoomHeld ? ZoomConfig.INSTANCE.barsPercent : 0f;
+    public static void reset(Minecraft client) {
+        releaseOverrides(client);
+        ZOOM.reset();
     }
 
     public static void frameUpdate() {
-        final int smooth = ZoomConfig.INSTANCE.smoothMs;
-
-        long now = System.nanoTime();
-        if (lastNs == 0L) {
-            lastNs = now;
-            return;
-        }
-        double dtMs = (now - lastNs) / 1_000_000.0;
-        lastNs = now;
-        if (dtMs > 50) dtMs = 50;
-
-        if (smooth <= 0) {
-            currentZoomMul = targetZoomMul;
-            currentBarsPct = targetBarsPct;
-            return;
-        }
-
-        final double tau = smooth / 2.302585092994046;
-        final double alpha = 1.0 - Math.exp(-dtMs / tau);
-
-        currentZoomMul = (float) lerp(currentZoomMul, targetZoomMul, alpha);
-        currentBarsPct = (float) lerp(currentBarsPct, targetBarsPct, alpha);
-
-        if (Math.abs(currentZoomMul - targetZoomMul) < 1e-4f) currentZoomMul = targetZoomMul;
-        if (Math.abs(currentBarsPct - targetBarsPct) < 1e-3f) currentBarsPct = targetBarsPct;
+        ZOOM.updateFrame();
     }
 
-    public static boolean isZoomHeld() { return zoomHeld; }
-    public static double getCurrentFovMul() { return currentZoomMul; }
+    public static double getCurrentFovMul() {
+        return ZOOM.currentMultiplier();
+    }
 
     public static boolean onWheel(double vertical) {
-        if (!zoomHeld || !ZoomConfig.INSTANCE.mouseWheelEnabled) return false;
-        if (vertical == 0) return false;
-
-        float step = ZoomConfig.INSTANCE.wheelStep;
-        if (vertical > 0) holdZoomMul -= step; else holdZoomMul += step;
-
-        holdZoomMul = clamp(holdZoomMul, ZoomConfig.INSTANCE.minZoomMultiplier, ZoomConfig.INSTANCE.maxZoomMultiplier);
-        return true;
+        return ZOOM.onWheel(vertical);
     }
 
-    public static void renderBars(GuiGraphicsExtractor ctx) {
-        if (currentBarsPct <= 0.0001f) return;
+    public static void renderBars(GuiGraphicsExtractor context) {
+        float barsPercent = ZOOM.currentBarsPercent();
+        if (barsPercent <= 0.0001f) return;
 
-        int sw = ctx.guiWidth();
-        int sh = ctx.guiHeight();
+        int width = context.guiWidth();
+        int height = context.guiHeight();
+        int barHeight = Math.round(height * barsPercent / 100f);
+        if (barHeight <= 0) return;
 
-        int h = Math.round(sh * (currentBarsPct / 100f));
-        if (h <= 0) return;
-
-        int color = 0xFF000000;
-        ctx.fill(0, 0, sw, h, color);
-        ctx.fill(0, sh - h, sw, sh, color);
+        context.fill(0, 0, width, barHeight, 0xFF000000);
+        context.fill(0, height - barHeight, width, height, 0xFF000000);
     }
 
-    private static double lerp(double a, double b, double t) {
-        if (t <= 0) return a;
-        if (t >= 1) return b;
-        return a + (b - a) * t;
+    private static void acquireOverrides(Minecraft client) {
+        if (ZoomConfig.INSTANCE.hideHudDuringZoom && !client.options.hideGui) {
+            client.options.hideGui = true;
+            hudForcedByUs = true;
+        }
+        if (ZoomConfig.INSTANCE.enableCinematicCamera && !client.options.smoothCamera) {
+            client.options.smoothCamera = true;
+            smoothCameraForcedByUs = true;
+        }
     }
 
-    private static float clamp(float v, float min, float max) {
-        return Math.max(min, Math.min(max, v));
+    private static void releaseOverrides(Minecraft client) {
+        if (hudForcedByUs) {
+            client.options.hideGui = false;
+            hudForcedByUs = false;
+        }
+        if (smoothCameraForcedByUs) {
+            client.options.smoothCamera = false;
+            smoothCameraForcedByUs = false;
+        }
     }
 }

@@ -11,8 +11,9 @@ pluginManagement {
 
 rootProject.name = 'CinematicZoom'
 
-include '1.21.1', '1.21.5', '1.21.7', '1.21.11', '26.1', '26.2'
+include '1.20.1', '1.21.1', '1.21.5', '1.21.7', '1.21.11', '26.1', '26.2'
 
+project(':1.20.1').projectDir = file('versions/1.20.1')
 project(':1.21.1').projectDir = file('versions/1.21.1')
 project(':1.21.5').projectDir = file('versions/1.21.5')
 project(':1.21.7').projectDir = file('versions/1.21.7')

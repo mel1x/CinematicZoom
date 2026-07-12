@@ -11,10 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Camera.class)
 public class CameraMixin {
 
-    /**
-     * Inject into calculateFov (called from update() before setupPerspective).
-     * Modifying getFov() is too late — the projection is already set up by then.
-     */
+    // FOV is finalized before projection setup.
     @Inject(method = "calculateFov(F)F", at = @At("RETURN"), cancellable = true)
     private void cinematiczoom$applyZoom(float partialTicks, CallbackInfoReturnable<Float> cir) {
         ZoomManager.frameUpdate();

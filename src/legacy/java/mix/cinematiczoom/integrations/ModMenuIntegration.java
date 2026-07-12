@@ -8,7 +8,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.text.Text;
 import mix.cinematiczoom.ZoomConfig;
 
-public class ModMenuIntegration implements ModMenuApi {
+public final class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> {
@@ -17,7 +17,7 @@ public class ModMenuIntegration implements ModMenuApi {
             ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setTitle(Text.translatable("cinematiczoom.config.title"))
-                .setSavingRunnable(() -> { cfg.clamp(); cfg.save(); });
+                .setSavingRunnable(cfg::save);
 
             ConfigCategory cat = builder.getOrCreateCategory(Text.translatable("cinematiczoom.config.category.general"));
             ConfigEntryBuilder eb = builder.entryBuilder();

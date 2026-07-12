@@ -2,15 +2,17 @@ package mix.cinematiczoom;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-public class CinematicZoomClient implements ClientModInitializer {
+public final class CinematicZoomClient implements ClientModInitializer {
 
-    public static final String MODID = "cinematiczoom";
+    private static final String MODID = "cinematiczoom";
     public static KeyBinding ZOOM_KEYBIND;
 
     private static final KeyBinding.Category ZOOM_CATEGORY =
@@ -28,5 +30,7 @@ public class CinematicZoomClient implements ClientModInitializer {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> ZoomManager.tick(client, ZOOM_KEYBIND));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
+        ClientLifecycleEvents.CLIENT_STOPPING.register(ZoomManager::reset);
     }
 }

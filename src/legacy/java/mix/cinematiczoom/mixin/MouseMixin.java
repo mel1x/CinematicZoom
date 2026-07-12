@@ -15,16 +15,12 @@ public class MouseMixin {
 
     @Shadow @Final private MinecraftClient client;
 
-    /**
-     * Перехватываем колёсико: во время удержания зума — управляем множителем и блокируем хотбар-скролл.
-     */
     @Inject(method = "onMouseScroll(JDD)V", at = @At("HEAD"), cancellable = true)
     private void cinematiczoom$onScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
-        if (client == null) return;
-        if (client.currentScreen != null) return; // в GUI не мешаем
+        if (client.currentScreen != null) return;
 
         if (ZoomManager.onWheel(vertical)) {
-            ci.cancel(); // отменяем стандартный обработчик (чтобы не листался хотбар)
+            ci.cancel();
         }
     }
 }

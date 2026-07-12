@@ -8,12 +8,13 @@ Smooth cinematic zoom for Minecraft Fabric with animated black bars, per-frame e
 
 | Minecraft | Mod version | Java |
 | --- | --- | --- |
-| 1.21.1 | 0.8.0 | 21+ |
-| 1.21.5 | 0.9.0 | 21+ |
-| 1.21.7 | 1.0.0 | 21+ |
-| 1.21.11 | 1.0.1 | 21+ |
-| 26.1–26.1.2 | 26.1 | 25+ |
-| 26.2–26.2.2 | 26.2 | 25+ |
+| 1.20.1 | 1.1 | 17+ |
+| 1.21.1–1.21.4 | 1.1 | 21+ |
+| 1.21.5–1.21.6 | 1.1 | 21+ |
+| 1.21.7–1.21.10 | 1.1 | 21+ |
+| 1.21.11 | 1.1 | 21+ |
+| 26.1–26.1.2 | 1.1 | 25+ |
+| 26.2–26.2.2 | 1.1 | 25+ |
 
 All ports live on `main`. The Gradle build keeps shared logic in common source sets and adds only the API-specific classes required by each Minecraft version.
 
@@ -33,7 +34,7 @@ On Linux or macOS:
 ./gradlew clean buildAll
 ```
 
-The six release JARs are collected in `build/libs/`.
+The seven release JARs are collected in `build/libs/`.
 
 Build only one target when developing:
 
@@ -48,9 +49,11 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 
 - `src/common` — Java code shared by every target.
 - `src/main/resources` — assets and translations shared by every target.
-- `src/legacy` — shared Yarn-based code for Minecraft `1.21.x`.
+- `src/legacy` — shared Yarn-based code for Minecraft `1.20.1–1.21.11`.
 - `src/legacy-pre-1.21.11` — key-binding API used before `1.21.11`.
+- `src/legacy-double-fov` — double-precision FOV API used by `1.20.1` and `1.21.1`.
 - `src/legacy-float-fov` — FOV signature used by `1.21.5–1.21.11`.
+- `src/legacy-render-tick-counter` — HUD render API used by `1.21.x`.
 - `src/modern` — shared unobfuscated API code for Minecraft `26.x`.
 - `versions/<version>` — only metadata and Java classes that differ for that exact version.
 - `build.gradle` — the single version/dependency matrix and all build configuration.

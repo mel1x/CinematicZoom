@@ -5,40 +5,46 @@ plugins {
 }
 
 def minecraftTargets = [
+	'1.20.1': [
+		minecraft: '1.20.1', yarn: '1.20.1+build.10', java: 17,
+		loader: '0.16.14', fabricApi: '0.92.9+1.20.1',
+		clothConfig: '11.1.136', modMenu: '7.2.2', modVersion: '1.1',
+		legacy: true, legacyClient: true, floatFov: false, renderTickCounter: false
+	],
 	'1.21.1': [
 		minecraft: '1.21.1', yarn: '1.21.1+build.3', java: 21,
 		loader: '0.18.4', fabricApi: '0.116.9+1.21.1',
-		clothConfig: '15.0.140', modMenu: '11.0.3', modVersion: '0.8.0',
-		legacy: true, legacyClient: true, floatFov: false
+		clothConfig: '15.0.140', modMenu: '11.0.3', modVersion: '1.1',
+		legacy: true, legacyClient: true, floatFov: false, renderTickCounter: true
 	],
 	'1.21.5': [
 		minecraft: '1.21.5', yarn: '1.21.5+build.1', java: 21,
 		loader: '0.18.4', fabricApi: '0.128.2+1.21.5',
-		clothConfig: '18.0.145', modMenu: '14.0.1', modVersion: '0.9.0',
-		legacy: true, legacyClient: true, floatFov: true
+		clothConfig: '18.0.145', modMenu: '14.0.1', modVersion: '1.1',
+		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true
 	],
 	'1.21.7': [
 		minecraft: '1.21.7', yarn: '1.21.7+build.8', java: 21,
 		loader: '0.16.14', fabricApi: '0.129.0+1.21.7',
-		clothConfig: '19.0.147', modMenu: '15.0.0-beta.3', modVersion: '1.0.0',
-		legacy: true, legacyClient: true, floatFov: true
+		clothConfig: '19.0.147', modMenu: '15.0.0-beta.3', modVersion: '1.1',
+		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true
 	],
 	'1.21.11': [
 		minecraft: '1.21.11', yarn: '1.21.11+build.4', java: 21,
 		loader: '0.18.4', fabricApi: '0.141.3+1.21.11',
-		clothConfig: '21.11.153', modMenu: '17.0.0-beta.2', modVersion: '1.0.1',
-		legacy: true, legacyClient: false, floatFov: true
+		clothConfig: '21.11.153', modMenu: '17.0.0-beta.2', modVersion: '1.1',
+		legacy: true, legacyClient: false, floatFov: true, renderTickCounter: true
 	],
 	'26.1': [
 		minecraft: '26.1', java: 25,
 		loader: '0.16.14', fabricApi: '0.154.2+26.1.2',
-		clothConfig: '26.1.154', modMenu: '18.0.0', modVersion: '26.1',
+		clothConfig: '26.1.154', modMenu: '18.0.0', modVersion: '1.1',
 		legacy: false
 	],
 	'26.2': [
 		minecraft: '26.2', java: 25,
 		loader: '0.19.3', fabricApi: '0.154.2+26.2',
-		clothConfig: '26.2.155', modMenu: '18.0.0', modVersion: '26.2',
+		clothConfig: '26.2.155', modMenu: '20.0.1', modVersion: '1.1',
 		legacy: false
 	]
 ]
@@ -91,13 +97,18 @@ subprojects {
 
 	if (target.legacy) {
 		javaDirectories << rootProject.file('src/legacy/java')
-		resourceDirectories << rootProject.file('src/legacy/resources')
 
 		if (target.legacyClient) {
 			javaDirectories << rootProject.file('src/legacy-pre-1.21.11/java')
 		}
 		if (target.floatFov) {
 			javaDirectories << rootProject.file('src/legacy-float-fov/java')
+		} else {
+			javaDirectories << rootProject.file('src/legacy-double-fov/java')
+		}
+		if (target.renderTickCounter) {
+			javaDirectories << rootProject.file('src/legacy-render-tick-counter/java')
+			resourceDirectories << rootProject.file('src/legacy/resources')
 		}
 	} else {
 		javaDirectories << rootProject.file('src/modern/java')

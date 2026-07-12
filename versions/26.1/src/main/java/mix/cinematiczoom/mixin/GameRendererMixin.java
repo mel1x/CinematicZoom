@@ -12,9 +12,7 @@ public class GameRendererMixin {
 
     @ModifyVariable(method = "extractGui(Lnet/minecraft/client/DeltaTracker;ZZ)V", at = @At("STORE"), ordinal = 0)
     private GuiGraphicsExtractor cinematiczoom$drawBarsFirst(GuiGraphicsExtractor ctx) {
-        // Мы рендерим полосы сразу после создания GuiGraphicsExtractor
-        // Это гарантирует, что они будут позади всех остальных элементов GUI (включая hotbar),
-        // но при этом они будут отрендерены даже если остальной GUI скрыт (renderHud = false).
+        // Draw bars behind the GUI, including when the HUD is hidden.
         ZoomManager.renderBars(ctx);
         return ctx;
     }
