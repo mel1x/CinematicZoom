@@ -1,76 +1,164 @@
 plugins {
-	id 'fabric-loom' version "${loom_version}"
-	id 'maven-publish'
+	id 'base'
+	id 'fabric-loom' version "${loom_version}" apply false
+	id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
 }
 
-version = project.mod_version
-group = project.maven_group
+def minecraftTargets = [
+	'1.21.1': [
+		minecraft: '1.21.1', yarn: '1.21.1+build.3', java: 21,
+		loader: '0.18.4', fabricApi: '0.116.9+1.21.1',
+		clothConfig: '15.0.140', modMenu: '11.0.3', modVersion: '0.8.0',
+		legacy: true, legacyClient: true, floatFov: false
+	],
+	'1.21.5': [
+		minecraft: '1.21.5', yarn: '1.21.5+build.1', java: 21,
+		loader: '0.18.4', fabricApi: '0.128.2+1.21.5',
+		clothConfig: '18.0.145', modMenu: '14.0.1', modVersion: '0.9.0',
+		legacy: true, legacyClient: true, floatFov: true
+	],
+	'1.21.7': [
+		minecraft: '1.21.7', yarn: '1.21.7+build.8', java: 21,
+		loader: '0.16.14', fabricApi: '0.129.0+1.21.7',
+		clothConfig: '19.0.147', modMenu: '15.0.0-beta.3', modVersion: '1.0.0',
+		legacy: true, legacyClient: true, floatFov: true
+	],
+	'1.21.11': [
+		minecraft: '1.21.11', yarn: '1.21.11+build.4', java: 21,
+		loader: '0.18.4', fabricApi: '0.141.3+1.21.11',
+		clothConfig: '21.11.153', modMenu: '17.0.0-beta.2', modVersion: '1.0.1',
+		legacy: true, legacyClient: false, floatFov: true
+	],
+	'26.1': [
+		minecraft: '26.1', java: 25,
+		loader: '0.16.14', fabricApi: '0.154.2+26.1.2',
+		clothConfig: '26.1.154', modMenu: '18.0.0', modVersion: '26.1',
+		legacy: false
+	],
+	'26.2': [
+		minecraft: '26.2', java: 25,
+		loader: '0.19.3', fabricApi: '0.154.2+26.2',
+		clothConfig: '26.2.155', modMenu: '18.0.0', modVersion: '26.2',
+		legacy: false
+	]
+]
 
-base {
-	archivesName = project.archives_base_name
-}
-
-repositories {
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.terraformersmc.com/releases/" }
-}
-
-dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modApi "me.shedaniel.cloth:cloth-config-fabric:19.0.147"
-	modApi "com.terraformersmc:modmenu:15.0.0-beta.3"
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+subprojects {
+	def target = minecraftTargets[project.name]
+	if (target == null) {
+		throw new GradleException("Unknown Minecraft target: ${project.path}")
 	}
-}
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
-}
+	apply plugin: target.legacy ? 'fabric-loom' : 'net.fabricmc.fabric-loom'
+	apply plugin: 'maven-publish'
 
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+	version = target.modVersion
+	group = rootProject.maven_group
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
-
-jar {
-	inputs.property "archivesName", project.base.archivesName
-
-	from("LICENSE") {
-		rename { "${it}_${inputs.properties.archivesName}"}
+	base {
+		archivesName = "${rootProject.archives_base_name}-${target.minecraft}"
 	}
-}
 
-// configure the maven publication
-publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
+	repositories {
+		maven { url = 'https://maven.shedaniel.me/' }
+		maven { url = 'https://maven.terraformersmc.com/releases/' }
+	}
+
+	dependencies {
+		minecraft "com.mojang:minecraft:${target.minecraft}"
+
+		if (target.legacy) {
+			mappings "net.fabricmc:yarn:${target.yarn}:v2"
+			modImplementation "net.fabricmc:fabric-loader:${target.loader}"
+			modImplementation "net.fabricmc.fabric-api:fabric-api:${target.fabricApi}"
+			modApi "me.shedaniel.cloth:cloth-config-fabric:${target.clothConfig}"
+			modApi "com.terraformersmc:modmenu:${target.modMenu}"
+		} else {
+			implementation "net.fabricmc:fabric-loader:${target.loader}"
+			implementation "net.fabricmc.fabric-api:fabric-api:${target.fabricApi}"
+			implementation "com.terraformersmc:modmenu:${target.modMenu}"
+			api("me.shedaniel.cloth:cloth-config-fabric:${target.clothConfig}") {
+				exclude group: 'net.fabricmc.fabric-api'
+			}
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+	def javaDirectories = [rootProject.file('src/common/java')]
+	def resourceDirectories = [
+		rootProject.file('src/main/resources'),
+		project.file('src/main/resources')
+	]
+
+	if (target.legacy) {
+		javaDirectories << rootProject.file('src/legacy/java')
+		resourceDirectories << rootProject.file('src/legacy/resources')
+
+		if (target.legacyClient) {
+			javaDirectories << rootProject.file('src/legacy-pre-1.21.11/java')
+		}
+		if (target.floatFov) {
+			javaDirectories << rootProject.file('src/legacy-float-fov/java')
+		}
+	} else {
+		javaDirectories << rootProject.file('src/modern/java')
 	}
+
+	javaDirectories << project.file('src/main/java')
+
+	sourceSets {
+		main {
+			java.setSrcDirs(javaDirectories)
+			resources.setSrcDirs(resourceDirectories)
+		}
+	}
+
+	processResources {
+		inputs.property 'version', project.version
+		filesMatching('fabric.mod.json') {
+			expand version: project.version
+		}
+	}
+
+	tasks.withType(JavaCompile).configureEach {
+		options.release = target.java
+	}
+
+	java {
+		withSourcesJar()
+		sourceCompatibility = JavaVersion.toVersion(target.java)
+		targetCompatibility = JavaVersion.toVersion(target.java)
+	}
+
+	jar {
+		inputs.property 'archivesName', project.base.archivesName
+		from(rootProject.file('LICENSE')) {
+			rename { "${it}_${inputs.properties.archivesName}" }
+		}
+	}
+
+	publishing {
+		publications {
+			create('mavenJava', MavenPublication) {
+				artifactId = project.base.archivesName.get()
+				from components.java
+			}
+		}
+	}
+}
+
+tasks.register('buildAll', Sync) {
+	group = 'build'
+	description = 'Builds every supported Minecraft version and collects the release JARs.'
+
+	def releaseJars = subprojects.collect {
+		def target = minecraftTargets[it.name]
+		it.tasks.named(target.legacy ? 'remapJar' : 'jar')
+	}
+	dependsOn subprojects.collect { it.tasks.named('build') }
+	from releaseJars
+	into layout.buildDirectory.dir('libs')
+}
+
+tasks.named('clean') {
+	dependsOn subprojects.collect { "${it.path}:clean" }
 }

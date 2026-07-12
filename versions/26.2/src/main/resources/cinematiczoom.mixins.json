@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "mix.cinematiczoom.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+ 		  "CameraMixin",
+    "MouseMixin",
+    "OptionsMixin",
+    "MinecraftMixin",
+		  "GuiMixin"
+ 		],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

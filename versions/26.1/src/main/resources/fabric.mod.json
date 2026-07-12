@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "cinematiczoom",
+	"version": "${version}",
+	"name": "CinematicZoom",
+	"description": "Плавный зум с чёрными полосами.",
+	"authors": [
+		"Mel1x"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/cinematic-zoom-(fabric)",
+		"sources": "https://github.com/mel1x/CinematicZoom",
+		"issues": "https://github.com/mel1x/CinematicZoom/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/cinematiczoom/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": ["mix.cinematiczoom.CinematicZoomClient"],
+		"modmenu": ["mix.cinematiczoom.integrations.ModMenuIntegration"]
+	},
+	"mixins": [
+		"cinematiczoom.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": ">=26.1 <=26.1.2",
+		"java": ">=25"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}

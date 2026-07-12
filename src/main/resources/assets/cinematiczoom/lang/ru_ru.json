@@ -1,5 +1,8 @@
 {
   "key.cinematiczoom.zoom": "Кинематографичный зум",
+  "key.categories.cinematiczoom": "Кинематографичный зум",
+  "key.category.cinematiczoom.main": "Кинематографичный зум",
+  "key.category.cinematiczoom.cinematiczoom": "Кинематографичный зум",
   
   "modmenu.descriptionTranslation.cinematiczoom": "Плавный зум с кинематографичными «чёрными полосами» и покадровым сглаживанием.",
   "modmenu.summaryTranslation.cinematiczoom": "Кинематографичный зум с чёрными полосами.",
