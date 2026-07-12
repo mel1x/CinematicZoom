@@ -1,0 +1,28 @@
+initscript {
+    repositories {
+        mavenCentral()
+    }
+}
+gradle.projectsEvaluated {
+    rootProject.tasks.register("dumpMethods") {
+        doLast {
+            def cp = rootProject.configurations.compileClasspath.files
+            if (!cp.isEmpty()) {
+                def cl = new java.net.URLClassLoader(cp.collect { it.toURI().toURL() } as java.net.URL[], null)
+                try {
+                    def mcClass = cl.loadClass("net.minecraft.client.Minecraft")
+                    println "--- Minecraft Fields of type Screen ---"
+                    mcClass.declaredFields.findAll { it.type.name.contains("Screen") }.each { println it.name + " (" + it.type.simpleName + ")" }
+                    
+                    println "--- Options OptionInstance Fields ---"
+                    def optClass = cl.loadClass("net.minecraft.client.Options")
+                    optClass.declaredFields.findAll { it.type.name.contains("OptionInstance") }.each { println it.name }
+                } catch (Exception e) {
+                    e.printStackTrace()
+                }
+            } else {
+                println "Minecraft jar not found!"
+            }
+        }
+    }
+}

@@ -21,7 +21,7 @@ public class ZoomManager {
     private static Boolean prevSmoothCamera = null;
 
     public static void tick(Minecraft client, KeyMapping key) {
-        boolean inScreen = client.screen != null;
+        boolean inScreen = client.gui.screen() != null;
         boolean wantZoom = key.isDown() && !inScreen;
 
         boolean starting = wantZoom && !zoomHeld;
@@ -34,8 +34,8 @@ public class ZoomManager {
 
             // Прячем HUD/прицел
             if (ZoomConfig.INSTANCE.hideHudDuringZoom) {
-                prevHudHidden = client.options.hideGui;
-                client.options.hideGui = true;
+                prevHudHidden = client.gui.hud.isHidden();
+                if (!client.gui.hud.isHidden()) client.gui.hud.toggle();
             }
             // Включаем кинематографичную камеру
             if (ZoomConfig.INSTANCE.enableCinematicCamera) {
@@ -47,7 +47,7 @@ public class ZoomManager {
         if (ending) {
             // Вернуть HUD
             if (prevHudHidden != null) {
-                client.options.hideGui = prevHudHidden;
+                if (client.gui.hud.isHidden() != prevHudHidden) client.gui.hud.toggle();
                 prevHudHidden = null;
             }
             // Вернуть камеру

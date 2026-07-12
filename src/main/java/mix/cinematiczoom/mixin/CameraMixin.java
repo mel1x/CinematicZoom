@@ -20,7 +20,7 @@ public class CameraMixin {
         ZoomManager.frameUpdate();
 
         Minecraft client = Minecraft.getInstance();
-        if (client.screen != null) return;
+        if (client.gui.screen() != null) return;
 
         float fov = cir.getReturnValue();
         double mul = ZoomManager.getCurrentFovMul();
