@@ -15,25 +15,36 @@ def minecraftTargets = [
 		minecraft: '1.21.1', yarn: '1.21.1+build.3', java: 21,
 		loader: '0.18.4', fabricApi: '0.116.9+1.21.1',
 		clothConfig: '15.0.140', modMenu: '11.0.3', modVersion: '1.1',
-		legacy: true, legacyClient: true, floatFov: false, renderTickCounter: true
+		legacy: true, legacyClient: true, floatFov: false, renderTickCounter: true,
+		releaseName: '1.21.1'
+	],
+	'1.21.2': [
+		minecraft: '1.21.2', yarn: '1.21.2+build.1', java: 21,
+		loader: '0.18.4', fabricApi: '0.106.1+1.21.2',
+		clothConfig: '16.0.143', modMenu: '12.0.1', modVersion: '1.1',
+		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true,
+		releaseName: '1.21.2-1.21.4'
 	],
 	'1.21.5': [
 		minecraft: '1.21.5', yarn: '1.21.5+build.1', java: 21,
 		loader: '0.18.4', fabricApi: '0.128.2+1.21.5',
 		clothConfig: '18.0.145', modMenu: '14.0.1', modVersion: '1.1',
-		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true
+		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true,
+		releaseName: '1.21.5-1.21.6'
 	],
 	'1.21.7': [
 		minecraft: '1.21.7', yarn: '1.21.7+build.8', java: 21,
 		loader: '0.16.14', fabricApi: '0.129.0+1.21.7',
 		clothConfig: '19.0.147', modMenu: '15.0.0-beta.3', modVersion: '1.1',
-		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true
+		legacy: true, legacyClient: true, floatFov: true, renderTickCounter: true,
+		releaseName: '1.21.7-1.21.8'
 	],
 	'1.21.11': [
-		minecraft: '1.21.11', yarn: '1.21.11+build.4', java: 21,
-		loader: '0.18.4', fabricApi: '0.141.3+1.21.11',
-		clothConfig: '21.11.153', modMenu: '17.0.0-beta.2', modVersion: '1.1',
-		legacy: true, legacyClient: false, floatFov: true, renderTickCounter: true
+		minecraft: '1.21.11', yarn: '1.21.11+build.6', java: 21,
+		loader: '0.18.4', fabricApi: '0.141.4+1.21.11',
+		clothConfig: '21.11.153', modMenu: '17.0.1-beta.1', modVersion: '1.1',
+		legacy: true, legacyClient: false, floatFov: true, renderTickCounter: true,
+		releaseName: '1.21.9-1.21.11'
 	],
 	'26.1': [
 		minecraft: '26.1', java: 25,
@@ -49,10 +60,38 @@ def minecraftTargets = [
 	]
 ]
 
+// Exact dependency sets used to compile-test every Minecraft version covered by
+// a range JAR. Example:
+//   gradlew :1.21.2:compileJava -PcompatProject=1.21.2 -PcompatVersion=1.21.4
+def compatibilityTargets = [
+	'1.21.2': [yarn: '1.21.2+build.1', fabricApi: '0.106.1+1.21.2', clothConfig: '16.0.143', modMenu: '12.0.1'],
+	'1.21.3': [yarn: '1.21.3+build.2', fabricApi: '0.114.1+1.21.3', clothConfig: '16.0.143', modMenu: '12.0.1'],
+	'1.21.4': [yarn: '1.21.4+build.8', fabricApi: '0.119.4+1.21.4', clothConfig: '17.0.144', modMenu: '13.0.4'],
+	'1.21.5': [yarn: '1.21.5+build.1', fabricApi: '0.128.2+1.21.5', clothConfig: '18.0.145', modMenu: '14.0.1'],
+	'1.21.6': [yarn: '1.21.6+build.1', fabricApi: '0.128.2+1.21.6', clothConfig: '19.0.147', modMenu: '15.0.2'],
+	'1.21.7': [yarn: '1.21.7+build.8', fabricApi: '0.129.0+1.21.7', clothConfig: '19.0.147', modMenu: '15.0.0-beta.3'],
+	'1.21.8': [yarn: '1.21.8+build.1', fabricApi: '0.136.1+1.21.8', clothConfig: '19.0.147', modMenu: '15.0.2'],
+	'1.21.9': [yarn: '1.21.9+build.1', fabricApi: '0.134.1+1.21.9', clothConfig: '20.0.149', modMenu: '16.0.1'],
+	'1.21.10': [yarn: '1.21.10+build.3', fabricApi: '0.138.4+1.21.10', clothConfig: '20.0.149', modMenu: '16.0.1'],
+	'1.21.11': [yarn: '1.21.11+build.6', fabricApi: '0.141.4+1.21.11', clothConfig: '21.11.153', modMenu: '17.0.1-beta.1']
+]
+
 subprojects {
 	def target = minecraftTargets[project.name]
 	if (target == null) {
 		throw new GradleException("Unknown Minecraft target: ${project.path}")
+	}
+	target = new LinkedHashMap(target)
+
+	def compatProject = rootProject.findProperty('compatProject')
+	def compatVersion = rootProject.findProperty('compatVersion')
+	if (compatProject == project.name && compatVersion != null) {
+		def compat = compatibilityTargets[compatVersion]
+		if (compat == null) {
+			throw new GradleException("Unknown compatibility-test version: ${compatVersion}")
+		}
+		target.putAll(compat)
+		target.minecraft = compatVersion
 	}
 
 	apply plugin: target.legacy ? 'fabric-loom' : 'net.fabricmc.fabric-loom'
@@ -62,7 +101,7 @@ subprojects {
 	group = rootProject.maven_group
 
 	base {
-		archivesName = "${rootProject.archives_base_name}-${target.minecraft}"
+		archivesName = "${rootProject.archives_base_name}-${target.releaseName ?: target.minecraft}"
 	}
 
 	repositories {

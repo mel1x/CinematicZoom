@@ -4,9 +4,7 @@
 	"version": "${version}",
 	"name": "CinematicZoom",
 	"description": "Плавный зум с чёрными полосами.",
-	"authors": [
-		"Mel1x"
-	],
+	"authors": ["Mel1x"],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/cinematic-zoom-(fabric)",
 		"sources": "https://github.com/mel1x/CinematicZoom",
@@ -17,17 +15,15 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": ["mix.cinematiczoom.CinematicZoomClient"],
-    	"modmenu": ["mix.cinematiczoom.integrations.ModMenuIntegration"]
+		"modmenu": ["mix.cinematiczoom.integrations.ModMenuIntegration"]
 	},
-	"mixins": [
-		"cinematiczoom.mixins.json"
-	],
+	"mixins": ["cinematiczoom.mixins.json"],
 	"depends": {
-		"fabricloader": ">=0.16.0",
-		"minecraft": "1.21.1",
+		"fabricloader": ">=0.16.10",
+		"minecraft": ">=1.21.2 <1.21.5",
 		"java": ">=21",
 		"fabric-api": "*",
-		"cloth-config2": ">=15.0.140"
+		"cloth-config2": ">=16.0.143"
 	},
 	"suggests": {
 		"modmenu": "*"
