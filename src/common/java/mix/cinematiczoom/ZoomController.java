@@ -51,6 +51,10 @@ final class ZoomController {
             return;
         }
 
+        if (currentMultiplier == targetMultiplier && currentBarsPercent == targetBarsPercent) {
+            return;
+        }
+
         double tau = smoothMs / 2.302585092994046;
         double alpha = 1.0 - Math.exp(-deltaMs / tau);
         currentMultiplier = (float) lerp(currentMultiplier, targetMultiplier, alpha);

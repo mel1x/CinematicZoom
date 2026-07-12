@@ -108,6 +108,7 @@ subprojects {
 		}
 		if (target.renderTickCounter) {
 			javaDirectories << rootProject.file('src/legacy-render-tick-counter/java')
+			javaDirectories << rootProject.file('src/legacy-hud-option/java')
 			resourceDirectories << rootProject.file('src/legacy/resources')
 		}
 	} else {

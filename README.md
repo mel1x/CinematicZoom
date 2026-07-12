@@ -1,6 +1,6 @@
-# CinematicZoom
+# CinematicZoom (Fabric 1.20.1–26.2)
 
-Smooth cinematic zoom for Minecraft Fabric with animated black bars, per-frame easing and optional mouse-wheel control.
+Smooth cinematic zoom for Minecraft Fabric 1.20.1–26.2 with animated black bars, per-frame easing and optional mouse-wheel control.
 
 <img src="https://raw.githubusercontent.com/mel1x/CinematicZoom/refs/heads/main/CinematicZoom.gif" alt="CinematicZoom preview">
 
@@ -20,7 +20,7 @@ All ports live on `main`. The Gradle build keeps shared logic in common source s
 
 ## Building
 
-The complete build requires JDK 25 because the `26.x` targets use Java 25 bytecode. The legacy targets are still compiled with `--release 21`.
+The complete build requires JDK 25 because the `26.x` targets use Java 25 bytecode. Minecraft 1.20.1 is compiled with `--release 17`, while the 1.21.x targets use `--release 21`.
 
 Build every supported version:
 
@@ -39,6 +39,7 @@ The seven release JARs are collected in `build/libs/`.
 Build only one target when developing:
 
 ```powershell
+.\gradlew.bat :1.20.1:build
 .\gradlew.bat :1.21.7:build
 .\gradlew.bat :26.2:build
 ```

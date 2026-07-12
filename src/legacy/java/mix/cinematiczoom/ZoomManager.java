@@ -7,7 +7,6 @@ import net.minecraft.client.option.KeyBinding;
 public final class ZoomManager {
     private static final ZoomController ZOOM = new ZoomController();
 
-    private static boolean hudForcedByUs;
     private static boolean smoothCameraForcedByUs;
 
     private ZoomManager() {
@@ -46,6 +45,10 @@ public final class ZoomManager {
         return ZOOM.onWheel(vertical);
     }
 
+    public static boolean shouldHideHud() {
+        return HudController.shouldHideHud();
+    }
+
     public static void renderBars(DrawContext context) {
         float barsPercent = ZOOM.currentBarsPercent();
         if (barsPercent <= 0.0001f) return;
@@ -60,10 +63,7 @@ public final class ZoomManager {
     }
 
     private static void acquireOverrides(MinecraftClient client) {
-        if (ZoomConfig.INSTANCE.hideHudDuringZoom && !client.options.hudHidden) {
-            client.options.hudHidden = true;
-            hudForcedByUs = true;
-        }
+        HudController.acquire(client);
         if (ZoomConfig.INSTANCE.enableCinematicCamera && !client.options.smoothCameraEnabled) {
             client.options.smoothCameraEnabled = true;
             smoothCameraForcedByUs = true;
@@ -71,10 +71,7 @@ public final class ZoomManager {
     }
 
     private static void releaseOverrides(MinecraftClient client) {
-        if (hudForcedByUs) {
-            client.options.hudHidden = false;
-            hudForcedByUs = false;
-        }
+        HudController.release(client);
         if (smoothCameraForcedByUs) {
             client.options.smoothCameraEnabled = false;
             smoothCameraForcedByUs = false;
