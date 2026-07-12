@@ -16,7 +16,8 @@
 	"icon": "assets/cinematiczoom/icon.png",
 	"environment": "client",
 	"entrypoints": {
-		"client": ["mix.cinematiczoom.CinematicZoomClient"]
+		"client": ["mix.cinematiczoom.CinematicZoomClient"],
+		"modmenu": ["mix.cinematiczoom.integrations.ModMenuIntegration"]
 	},
 	"mixins": [
 		"cinematiczoom.mixins.json"

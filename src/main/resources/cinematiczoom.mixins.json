@@ -8,7 +8,7 @@
     "MouseMixin",
     "OptionsMixin",
     "MinecraftMixin",
-		  "InGameHudMixin"
+		  "GameRendererMixin"
  		],
 	"injectors": {
 		"defaultRequire": 1

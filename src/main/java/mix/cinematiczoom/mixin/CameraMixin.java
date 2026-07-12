@@ -11,8 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Camera.class)
 public class CameraMixin {
 
-    @Inject(method = "getFov()F", at = @At("RETURN"), cancellable = true)
-    private void cinematiczoom$applyZoom(CallbackInfoReturnable<Float> cir) {
+    /**
+     * Inject into calculateFov (called from update() before setupPerspective).
+     * Modifying getFov() is too late — the projection is already set up by then.
+     */
+    @Inject(method = "calculateFov(F)F", at = @At("RETURN"), cancellable = true)
+    private void cinematiczoom$applyZoom(float partialTicks, CallbackInfoReturnable<Float> cir) {
         ZoomManager.frameUpdate();
 
         Minecraft client = Minecraft.getInstance();

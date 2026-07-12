@@ -108,8 +108,8 @@ public class ZoomManager {
     public static void renderBars(GuiGraphicsExtractor ctx) {
         if (currentBarsPct <= 0.0001f) return;
 
-        int sw = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-        int sh = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        int sw = ctx.guiWidth();
+        int sh = ctx.guiHeight();
 
         int h = Math.round(sh * (currentBarsPct / 100f));
         if (h <= 0) return;
