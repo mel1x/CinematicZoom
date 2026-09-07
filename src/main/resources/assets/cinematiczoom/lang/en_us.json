@@ -24,5 +24,8 @@
   "cinematiczoom.option.hide_hud.tooltip": "Temporarily enables F1-like mode to hide HUD and crosshair during zoom.",
 
   "cinematiczoom.option.cinematic_cam": "Enable cinematic camera while zooming",
-  "cinematiczoom.option.cinematic_cam.tooltip": "Temporarily enables smooth camera (cinematic camera) during zoom."
+  "cinematiczoom.option.cinematic_cam.tooltip": "Temporarily enables smooth camera (cinematic camera) during zoom.",
+
+  "cinematiczoom.option.toggle_mode": "Toggle zoom",
+  "cinematiczoom.option.toggle_mode.tooltip": "Press to toggle zoom on/off instead of holding the key."
 }

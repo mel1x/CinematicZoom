@@ -11,18 +11,24 @@ import org.lwjgl.glfw.GLFW;
 public final class CinematicZoomClient implements ClientModInitializer {
 
     private static final String MODID = "cinematiczoom";
-    public static KeyMapping ZOOM_KEYBIND;
+    public static ZoomKeyMapping ZOOM_KEYBIND;
+
+    public static ZoomKeyMapping getKeyMapping() {
+        if (ZOOM_KEYBIND == null) {
+            ZOOM_KEYBIND = new ZoomKeyMapping(
+                    "key.cinematiczoom.zoom",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_C,
+                    KeyMapping.Category.register(Identifier.parse(MODID + ":cinematiczoom"))
+            );
+        }
+        return ZOOM_KEYBIND;
+    }
 
     @Override
     public void onInitializeClient() {
         ZoomConfig.INSTANCE.load();
-
-        ZOOM_KEYBIND = new KeyMapping(
-                "key.cinematiczoom.zoom",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_C,
-                KeyMapping.Category.register(Identifier.parse(MODID + ":cinematiczoom"))
-        );
+        getKeyMapping();
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(ZoomManager::reset);

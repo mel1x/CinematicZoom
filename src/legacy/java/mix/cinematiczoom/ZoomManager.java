@@ -1,34 +1,80 @@
 package mix.cinematiczoom;
 
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
 
 public final class ZoomManager {
     private static final ZoomController ZOOM = new ZoomController();
 
     private static boolean smoothCameraForcedByUs;
+    private static boolean toggled;
+    private static boolean wasKeyDown;
 
     private ZoomManager() {
     }
 
     public static void tick(MinecraftClient client, KeyBinding key) {
-        boolean canZoom = client.world != null
-                && client.player != null
+        boolean inWorld = client.world != null && client.player != null;
+        boolean canInteract = inWorld
                 && client.currentScreen == null
                 && client.isWindowFocused();
-        boolean wantZoom = key.isPressed() && canZoom;
+
+        boolean isKeyDown = canInteract && isZoomKeyPressed(client, key);
+        boolean wantZoom;
+
+        if (ZoomConfig.INSTANCE.toggleMode) {
+            if (isKeyDown && !wasKeyDown) {
+                toggled = !toggled;
+            }
+            if (!inWorld) {
+                toggled = false;
+            }
+            wantZoom = toggled && inWorld;
+        } else {
+            toggled = false;
+            wantZoom = isKeyDown && canInteract;
+        }
+        wasKeyDown = isKeyDown;
 
         if (ZOOM.update(wantZoom)) {
             acquireOverrides(client);
         }
         if (!wantZoom) {
-            // Release even when a key-up transition was missed.
             releaseOverrides(client);
         }
     }
 
+    private static boolean isZoomKeyPressed(MinecraftClient client, KeyBinding key) {
+        if (key == null) {
+            return false;
+        }
+        if (key.isPressed()) {
+            return true;
+        }
+        if (key.isUnbound() || client.getWindow() == null) {
+            return false;
+        }
+        InputUtil.Key boundKey = KeyBindingHelper.getBoundKeyOf(key);
+        if (boundKey.getCode() == InputUtil.UNKNOWN_KEY.getCode()) {
+            return false;
+        }
+        long handle = client.getWindow().getHandle();
+        if (boundKey.getCategory() == InputUtil.Type.KEYSYM) {
+            return GLFW.glfwGetKey(handle, boundKey.getCode()) == GLFW.GLFW_PRESS;
+        }
+        if (boundKey.getCategory() == InputUtil.Type.MOUSE) {
+            return GLFW.glfwGetMouseButton(handle, boundKey.getCode()) == GLFW.GLFW_PRESS;
+        }
+        return false;
+    }
+
     public static void reset(MinecraftClient client) {
+        toggled = false;
+        wasKeyDown = false;
         releaseOverrides(client);
         ZOOM.reset();
     }
@@ -39,6 +85,10 @@ public final class ZoomManager {
 
     public static double getCurrentFovMul() {
         return ZOOM.currentMultiplier();
+    }
+
+    public static boolean isZoomActive() {
+        return ZOOM.isActive();
     }
 
     public static boolean onWheel(double vertical) {

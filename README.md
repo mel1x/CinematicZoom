@@ -8,14 +8,14 @@ Smooth cinematic zoom for Minecraft Fabric 1.20.1–26.2 with animated black bar
 
 | Minecraft | Mod version | Java |
 | --- | --- | --- |
-| 1.20.1 | 1.1 | 17+ |
-| 1.21.1 | 1.1 | 21+ |
-| 1.21.2–1.21.4 | 1.1 | 21+ |
-| 1.21.5–1.21.6 | 1.1 | 21+ |
-| 1.21.7–1.21.8 | 1.1 | 21+ |
-| 1.21.9–1.21.11 | 1.1 | 21+ |
-| 26.1–26.1.2 | 1.1 | 25+ |
-| 26.2–26.2.2 | 1.1 | 25+ |
+| 1.20.1 | 1.2 | 17+ |
+| 1.21.1 | 1.2 | 21+ |
+| 1.21.2–1.21.4 | 1.2 | 21+ |
+| 1.21.5–1.21.6 | 1.2 | 21+ |
+| 1.21.7–1.21.8 | 1.2 | 21+ |
+| 1.21.9–1.21.11 | 1.2 | 21+ |
+| 26.1–26.1.2 | 1.2 | 25+ |
+| 26.2–26.2.2 | 1.2 | 25+ |
 
 All ports live on `main`. The Gradle build keeps shared logic in common source sets and adds only the API-specific classes required by each Minecraft version.
 
@@ -37,7 +37,7 @@ On Linux or macOS:
 
 The eight release JARs are collected in `build/libs/`. Range builds include the
 full supported interval in the filename, for example
-`cinematiczoom-1.21.2-1.21.4-1.1.jar`.
+`cinematiczoom-1.21.2-1.21.4-1.2.jar`.
 
 Build only one target when developing:
 

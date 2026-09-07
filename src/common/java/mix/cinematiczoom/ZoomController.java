@@ -1,6 +1,8 @@
 package mix.cinematiczoom;
 
 final class ZoomController {
+    private static final double LN10 = 2.302585092994046;
+
     private boolean active;
     private float currentMultiplier = 1.0f;
     private float targetMultiplier = 1.0f;
@@ -29,6 +31,7 @@ final class ZoomController {
         active = false;
         currentMultiplier = 1.0f;
         targetMultiplier = 1.0f;
+        heldMultiplier = ZoomConfig.INSTANCE.baseZoomMultiplier;
         currentBarsPercent = 0f;
         targetBarsPercent = 0f;
         lastFrameNanos = 0L;
@@ -41,7 +44,7 @@ final class ZoomController {
             return;
         }
 
-        double deltaMs = Math.min((now - lastFrameNanos) / 1_000_000.0, 50.0);
+        double deltaMs = Math.min((now - lastFrameNanos) * 1e-6, 50.0);
         lastFrameNanos = now;
 
         int smoothMs = ZoomConfig.INSTANCE.smoothMs;
@@ -55,7 +58,7 @@ final class ZoomController {
             return;
         }
 
-        double tau = smoothMs / 2.302585092994046;
+        double tau = smoothMs / LN10;
         double alpha = 1.0 - Math.exp(-deltaMs / tau);
         currentMultiplier = (float) lerp(currentMultiplier, targetMultiplier, alpha);
         currentBarsPercent = (float) lerp(currentBarsPercent, targetBarsPercent, alpha);
@@ -69,13 +72,12 @@ final class ZoomController {
     }
 
     boolean onWheel(double vertical) {
-        if (!active || !ZoomConfig.INSTANCE.mouseWheelEnabled || vertical == 0) {
+        if (!active || !ZoomConfig.INSTANCE.mouseWheelEnabled || vertical == 0.0) {
             return false;
         }
 
-        heldMultiplier += vertical > 0 ? -ZoomConfig.INSTANCE.wheelStep : ZoomConfig.INSTANCE.wheelStep;
         heldMultiplier = clamp(
-                heldMultiplier,
+                heldMultiplier - (float) vertical * ZoomConfig.INSTANCE.wheelStep,
                 ZoomConfig.INSTANCE.minZoomMultiplier,
                 ZoomConfig.INSTANCE.maxZoomMultiplier
         );
@@ -87,13 +89,15 @@ final class ZoomController {
         return currentMultiplier;
     }
 
+    boolean isActive() {
+        return active || Math.abs(currentMultiplier - 1.0f) > 1e-4f;
+    }
+
     float currentBarsPercent() {
         return currentBarsPercent;
     }
 
     private static double lerp(double start, double end, double amount) {
-        if (amount <= 0) return start;
-        if (amount >= 1) return end;
         return start + (end - start) * amount;
     }
 

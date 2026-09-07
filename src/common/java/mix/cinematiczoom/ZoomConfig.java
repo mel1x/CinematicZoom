@@ -19,14 +19,13 @@ public final class ZoomConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("cinematiczoom.json");
 
-    // User-facing options.
     public float barsPercent = 15.0f;
     public int smoothMs = 240;
     public boolean mouseWheelEnabled = true;
     public boolean hideHudDuringZoom = true;
     public boolean enableCinematicCamera = true;
+    public boolean toggleMode = false;
 
-    // Advanced values kept in the config file.
     public float baseZoomMultiplier = 0.33f;
     public float minZoomMultiplier = 0.10f;
     public float maxZoomMultiplier = 1.00f;
@@ -64,7 +63,6 @@ public final class ZoomConfig {
     public void clamp() {
         barsPercent = Math.max(0f, Math.min(50f, barsPercent));
         smoothMs = Math.max(0, smoothMs);
-
         maxZoomMultiplier = Math.max(0.05f, Math.min(1.0f, maxZoomMultiplier));
         minZoomMultiplier = Math.max(0.05f, Math.min(maxZoomMultiplier, minZoomMultiplier));
         baseZoomMultiplier = Math.max(minZoomMultiplier, Math.min(maxZoomMultiplier, baseZoomMultiplier));
@@ -77,6 +75,7 @@ public final class ZoomConfig {
         mouseWheelEnabled = other.mouseWheelEnabled;
         hideHudDuringZoom = other.hideHudDuringZoom;
         enableCinematicCamera = other.enableCinematicCamera;
+        toggleMode = other.toggleMode;
         baseZoomMultiplier = other.baseZoomMultiplier;
         minZoomMultiplier = other.minZoomMultiplier;
         maxZoomMultiplier = other.maxZoomMultiplier;

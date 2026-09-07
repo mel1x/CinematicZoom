@@ -9,27 +9,50 @@ public final class ZoomManager {
 
     private static boolean hudForcedByUs;
     private static boolean smoothCameraForcedByUs;
+    private static boolean toggled;
+    private static boolean wasKeyDown;
 
     private ZoomManager() {
     }
 
     public static void tick(Minecraft client, KeyMapping key) {
-        boolean canZoom = client.level != null
-                && client.player != null
+        boolean inWorld = client.level != null && client.player != null;
+        boolean canInteract = inWorld
                 && client.gui.screen() == null
                 && client.isWindowActive();
-        boolean wantZoom = key.isDown() && canZoom;
+
+        boolean isKeyDown = canInteract && isZoomKeyDown(client, key);
+        boolean wantZoom;
+
+        if (ZoomConfig.INSTANCE.toggleMode) {
+            if (isKeyDown && !wasKeyDown) {
+                toggled = !toggled;
+            }
+            if (!inWorld) {
+                toggled = false;
+            }
+            wantZoom = toggled && inWorld;
+        } else {
+            toggled = false;
+            wantZoom = isKeyDown && canInteract;
+        }
+        wasKeyDown = isKeyDown;
 
         if (ZOOM.update(wantZoom)) {
             acquireOverrides(client);
         }
         if (!wantZoom) {
-            // Release even when a key-up transition was missed.
             releaseOverrides(client);
         }
     }
 
+    private static boolean isZoomKeyDown(Minecraft client, KeyMapping key) {
+        return key != null && key.isDown();
+    }
+
     public static void reset(Minecraft client) {
+        toggled = false;
+        wasKeyDown = false;
         releaseOverrides(client);
         ZOOM.reset();
     }
@@ -40,6 +63,10 @@ public final class ZoomManager {
 
     public static double getCurrentFovMul() {
         return ZOOM.currentMultiplier();
+    }
+
+    public static boolean isZoomActive() {
+        return ZOOM.isActive();
     }
 
     public static boolean onWheel(double vertical) {

@@ -12,7 +12,6 @@ public class GuiMixin {
 
     @ModifyVariable(method = "extractRenderState(Lnet/minecraft/client/DeltaTracker;ZZ)V", at = @At("STORE"), ordinal = 0)
     private GuiGraphicsExtractor cinematiczoom$drawBarsFirst(GuiGraphicsExtractor ctx) {
-        // Draw bars behind the GUI, including when the HUD is hidden.
         ZoomManager.renderBars(ctx);
         return ctx;
     }

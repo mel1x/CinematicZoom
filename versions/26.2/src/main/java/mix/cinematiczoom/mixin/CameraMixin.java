@@ -1,7 +1,6 @@
 package mix.cinematiczoom.mixin;
 
 import mix.cinematiczoom.ZoomManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,13 +10,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Camera.class)
 public class CameraMixin {
 
-    // FOV is finalized before projection setup.
     @Inject(method = "calculateFov(F)F", at = @At("RETURN"), cancellable = true)
     private void cinematiczoom$applyZoom(float partialTicks, CallbackInfoReturnable<Float> cir) {
         ZoomManager.frameUpdate();
-
-        Minecraft client = Minecraft.getInstance();
-        if (client.gui.screen() != null) return;
 
         float fov = cir.getReturnValue();
         double mul = ZoomManager.getCurrentFovMul();

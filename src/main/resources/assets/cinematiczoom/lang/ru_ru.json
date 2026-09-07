@@ -15,7 +15,7 @@
   "cinematiczoom.option.bars_percent.tooltip": "Процент высоты экрана для каждой полосы (верх/низ). Диапазон 0–50%.",
 
   "cinematiczoom.option.smooth_ms": "Скорость приближения (мс, 0 = мгновенно)",
-  "cinematiczoom.option.smooth_ms.tooltip": "Время затраченное на планую анимацию зума (0 = без анимации).",
+  "cinematiczoom.option.smooth_ms.tooltip": "Время на плавную анимацию зума (0 = без анимации).",
 
   "cinematiczoom.option.mouse_wheel_enabled": "Колёсико мыши во время зума",
   "cinematiczoom.option.mouse_wheel_enabled.tooltip": "Разрешить менять степень приближения колёсиком при удержании клавиши зума.",
@@ -24,5 +24,8 @@
   "cinematiczoom.option.hide_hud.tooltip": "Временно включает режим F1 и прячет HUD во время зума.",
 
   "cinematiczoom.option.cinematic_cam": "Кинематографичная камера при зуме",
-  "cinematiczoom.option.cinematic_cam.tooltip": "Временно включает кинематографическую камеру во время зума."
+  "cinematiczoom.option.cinematic_cam.tooltip": "Временно включает кинематографическую камеру во время зума.",
+
+  "cinematiczoom.option.toggle_mode": "Режим переключения (Toggle)",
+  "cinematiczoom.option.toggle_mode.tooltip": "Переключать зум нажатием клавиши вместо её удержания."
 }

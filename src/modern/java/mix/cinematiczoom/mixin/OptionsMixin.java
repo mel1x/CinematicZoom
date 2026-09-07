@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
+import java.util.Arrays;
 
 @Mixin(Options.class)
 public class OptionsMixin {
@@ -19,13 +20,28 @@ public class OptionsMixin {
     @Shadow
     public KeyMapping[] keyMappings;
 
+    @Inject(method = "load", at = @At("HEAD"))
+    private void cinematiczoom$onLoad(CallbackInfo ci) {
+        cinematiczoom$ensureKeyMapping();
+    }
+
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void cinematiczoom$addKeyBinding(Minecraft client, File optionsFile, CallbackInfo ci) {
-        if (CinematicZoomClient.ZOOM_KEYBIND != null) {
-            KeyMapping[] newMappings = new KeyMapping[this.keyMappings.length + 1];
-            System.arraycopy(this.keyMappings, 0, newMappings, 0, this.keyMappings.length);
-            newMappings[this.keyMappings.length] = CinematicZoomClient.ZOOM_KEYBIND;
-            this.keyMappings = newMappings;
+    private void cinematiczoom$onInitTail(Minecraft client, File optionsFile, CallbackInfo ci) {
+        cinematiczoom$ensureKeyMapping();
+    }
+
+    private void cinematiczoom$ensureKeyMapping() {
+        if (this.keyMappings == null) {
+            return;
         }
+        KeyMapping zoomKey = CinematicZoomClient.getKeyMapping();
+        for (KeyMapping mapping : this.keyMappings) {
+            if (mapping == zoomKey) {
+                return;
+            }
+        }
+        KeyMapping[] newMappings = Arrays.copyOf(this.keyMappings, this.keyMappings.length + 1);
+        newMappings[this.keyMappings.length] = zoomKey;
+        this.keyMappings = newMappings;
     }
 }
