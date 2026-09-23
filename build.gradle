@@ -57,6 +57,12 @@ def minecraftTargets = [
 		loader: '0.19.3', fabricApi: '0.154.2+26.2',
 		clothConfig: '26.2.155', modMenu: '20.0.1', modVersion: '1.2',
 		legacy: false
+	],
+	'26.3': [
+		minecraft: '26.3', java: 25,
+		loader: '0.19.5', fabricApi: '0.161.0+26.3',
+		clothConfig: '26.3.159', modMenu: '21.0.0-beta.1', modVersion: '1.2',
+		legacy: false
 	]
 ]
 
@@ -149,6 +155,7 @@ subprojects {
 		}
 	} else {
 		javaDirectories << rootProject.file('src/modern/java')
+		javaDirectories << rootProject.file(target.minecraft == '26.3' ? 'src/modern-26.3/java' : 'src/modern-pre-26.3/java')
 	}
 
 	javaDirectories << project.file('src/main/java')

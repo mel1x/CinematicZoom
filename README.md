@@ -1,6 +1,6 @@
-# CinematicZoom (Fabric 1.20.1–26.2)
+# CinematicZoom (Fabric 1.20.1–26.3)
 
-Smooth cinematic zoom for Minecraft Fabric 1.20.1–26.2 with animated black bars, per-frame easing and optional mouse-wheel control.
+Smooth cinematic zoom for Minecraft Fabric 1.20.1–26.3 with animated black bars, per-frame easing and optional mouse-wheel control.
 
 <img src="https://raw.githubusercontent.com/mel1x/CinematicZoom/refs/heads/main/CinematicZoom.gif" alt="CinematicZoom preview">
 
@@ -16,6 +16,7 @@ Smooth cinematic zoom for Minecraft Fabric 1.20.1–26.2 with animated black bar
 | 1.21.9–1.21.11 | 1.2 | 21+ |
 | 26.1–26.1.2 | 1.2 | 25+ |
 | 26.2–26.2.2 | 1.2 | 25+ |
+| 26.3 | 1.2 | 25+ |
 
 All ports live on `main`. The Gradle build keeps shared logic in common source sets and adds only the API-specific classes required by each Minecraft version.
 
@@ -35,7 +36,7 @@ On Linux or macOS:
 ./gradlew clean buildAll
 ```
 
-The eight release JARs are collected in `build/libs/`. Range builds include the
+The nine release JARs are collected in `build/libs/`. Range builds include the
 full supported interval in the filename, for example
 `cinematiczoom-1.21.2-1.21.4-1.2.jar`.
 
@@ -45,6 +46,7 @@ Build only one target when developing:
 .\gradlew.bat :1.20.1:build
 .\gradlew.bat :1.21.7:build
 .\gradlew.bat :26.2:build
+.\gradlew.bat '-PonlyTarget=26.3' ':26.3:build'
 ```
 
 Per-version build output is also available under `versions/<minecraft-version>/build/libs/`.
@@ -59,6 +61,7 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 - `src/legacy-float-fov` — FOV signature used by `1.21.2–1.21.11`.
 - `src/legacy-render-tick-counter` — HUD render API used by `1.21.x`.
 - `src/modern` — shared unobfuscated API code for Minecraft `26.x`.
+- `src/modern-pre-26.3` and `src/modern-26.3` — version-specific key input APIs.
 - `versions/<version>` — metadata and Java classes for each exact or range build target.
 - `build.gradle` — the single version/dependency matrix and all build configuration.
 
