@@ -11,9 +11,6 @@
   "cinematiczoom.config.title": "Cinematic Zoom — Настройки",
   "cinematiczoom.config.category.general": "Общие",
 
-  "cinematiczoom.option.starting_zoom": "Начальный зум (0–5×)",
-  "cinematiczoom.option.starting_zoom.tooltip": "Степень приближения при включении зума. При 0× изображение не приближается, но чёрные полосы остаются.",
-
   "cinematiczoom.option.bars_percent": "Высота чёрных полос, %",
   "cinematiczoom.option.bars_percent.tooltip": "Процент высоты экрана для каждой полосы (верх/низ). Диапазон 0–50%.",
 
