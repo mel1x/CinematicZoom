@@ -2,6 +2,8 @@ package mix.cinematiczoom;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +28,8 @@ public final class ZoomConfig {
     public boolean enableCinematicCamera = true;
     public boolean toggleMode = false;
 
-    public float baseZoomMultiplier = 0.33f;
+    @SerializedName("startingZoom")
+    public float baseZoomMultiplier = 3.0f;
     public float minZoomMultiplier = 0.10f;
     public float maxZoomMultiplier = 1.00f;
     public float wheelStep = 0.05f;
@@ -38,8 +41,13 @@ public final class ZoomConfig {
         }
 
         try (Reader reader = Files.newBufferedReader(PATH)) {
-            ZoomConfig loaded = GSON.fromJson(reader, ZoomConfig.class);
+            JsonObject json = GSON.fromJson(reader, JsonObject.class);
+            ZoomConfig loaded = GSON.fromJson(json, ZoomConfig.class);
             if (loaded != null) {
+                if (!json.has("startingZoom") && json.has("baseZoomMultiplier")) {
+                    float oldMultiplier = json.get("baseZoomMultiplier").getAsFloat();
+                    loaded.baseZoomMultiplier = oldMultiplier <= 0f ? 0f : 1f / oldMultiplier;
+                }
                 copyFrom(loaded);
             }
         } catch (Exception exception) {
@@ -65,7 +73,7 @@ public final class ZoomConfig {
         smoothMs = Math.max(0, smoothMs);
         maxZoomMultiplier = Math.max(0.05f, Math.min(1.0f, maxZoomMultiplier));
         minZoomMultiplier = Math.max(0.05f, Math.min(maxZoomMultiplier, minZoomMultiplier));
-        baseZoomMultiplier = Math.max(minZoomMultiplier, Math.min(maxZoomMultiplier, baseZoomMultiplier));
+        baseZoomMultiplier = Math.max(0f, Math.min(5f, baseZoomMultiplier));
         wheelStep = Math.max(0.01f, Math.min(0.25f, wheelStep));
     }
 

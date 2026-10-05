@@ -68,6 +68,7 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 ## Features
 
 - Hold-to-zoom (default key: `C`, rebindable).
+- Configurable starting zoom from 0× to 5×; 0× still shows the cinematic bars.
 - Per-frame smoothing.
 - Configurable animated black bars.
 - Optional mouse-wheel zoom adjustment.
