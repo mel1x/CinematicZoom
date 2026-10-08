@@ -3,7 +3,6 @@ package mix.cinematiczoom;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +27,7 @@ public final class ZoomConfig {
     public boolean enableCinematicCamera = true;
     public boolean toggleMode = false;
 
-    @SerializedName("startingZoom")
-    public float baseZoomMultiplier = 3.0f;
+    public float startingZoom = 3.0f;
     public float minZoomMultiplier = 0.10f;
     public float maxZoomMultiplier = 1.00f;
     public float wheelStep = 0.05f;
@@ -46,7 +44,13 @@ public final class ZoomConfig {
             if (loaded != null) {
                 if (!json.has("startingZoom") && json.has("baseZoomMultiplier")) {
                     float oldMultiplier = json.get("baseZoomMultiplier").getAsFloat();
-                    loaded.baseZoomMultiplier = oldMultiplier <= 0f ? 0f : 1f / oldMultiplier;
+                    if (oldMultiplier <= 0f) {
+                        loaded.startingZoom = 1.0f;
+                    } else if (Math.abs(oldMultiplier - 0.33f) < 0.01f) {
+                        loaded.startingZoom = 3.0f;
+                    } else {
+                        loaded.startingZoom = Math.round(10.0f / oldMultiplier) / 10.0f;
+                    }
                 }
                 copyFrom(loaded);
             }
@@ -73,7 +77,7 @@ public final class ZoomConfig {
         smoothMs = Math.max(0, smoothMs);
         maxZoomMultiplier = Math.max(0.05f, Math.min(1.0f, maxZoomMultiplier));
         minZoomMultiplier = Math.max(0.05f, Math.min(maxZoomMultiplier, minZoomMultiplier));
-        baseZoomMultiplier = Math.max(0f, Math.min(5f, baseZoomMultiplier));
+        startingZoom = Math.max(1f, Math.min(10f, startingZoom));
         wheelStep = Math.max(0.01f, Math.min(0.25f, wheelStep));
     }
 
@@ -84,7 +88,7 @@ public final class ZoomConfig {
         hideHudDuringZoom = other.hideHudDuringZoom;
         enableCinematicCamera = other.enableCinematicCamera;
         toggleMode = other.toggleMode;
-        baseZoomMultiplier = other.baseZoomMultiplier;
+        startingZoom = other.startingZoom;
         minZoomMultiplier = other.minZoomMultiplier;
         maxZoomMultiplier = other.maxZoomMultiplier;
         wheelStep = other.wheelStep;

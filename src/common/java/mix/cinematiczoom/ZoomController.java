@@ -102,7 +102,11 @@ final class ZoomController {
     }
 
     private static float startingMultiplier() {
-        float zoom = ZoomConfig.INSTANCE.baseZoomMultiplier;
-        return zoom <= 0f ? 1f : 1f / zoom;
+        float zoom = ZoomConfig.INSTANCE.startingZoom;
+        return clamp(
+                zoom <= 0f ? 1.0f : 1.0f / zoom,
+                ZoomConfig.INSTANCE.minZoomMultiplier,
+                ZoomConfig.INSTANCE.maxZoomMultiplier
+        );
     }
 }
