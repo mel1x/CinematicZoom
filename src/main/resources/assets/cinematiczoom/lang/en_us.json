@@ -11,6 +11,9 @@
   "cinematiczoom.config.title": "Cinematic Zoom - Settings",
   "cinematiczoom.config.category.general": "General",
 
+  "cinematiczoom.option.starting_zoom": "Starting zoom (1–10×)",
+  "cinematiczoom.option.starting_zoom.tooltip": "Zoom level applied when zoom starts. 1× keeps the normal view while still showing the black bars.",
+
   "cinematiczoom.option.bars_percent": "Black bars height, %",
   "cinematiczoom.option.bars_percent.tooltip": "Percent of screen height for each bar (top and bottom). 0–50%.",
 

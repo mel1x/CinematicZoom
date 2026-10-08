@@ -6,7 +6,7 @@ final class ZoomController {
     private boolean active;
     private float currentMultiplier = 1.0f;
     private float targetMultiplier = 1.0f;
-    private float heldMultiplier = ZoomConfig.INSTANCE.baseZoomMultiplier;
+    private float heldMultiplier = startingMultiplier();
     private float currentBarsPercent;
     private float targetBarsPercent;
     private long lastFrameNanos;
@@ -14,11 +14,7 @@ final class ZoomController {
     boolean update(boolean shouldZoom) {
         boolean starting = shouldZoom && !active;
         if (starting) {
-            heldMultiplier = clamp(
-                    ZoomConfig.INSTANCE.baseZoomMultiplier,
-                    ZoomConfig.INSTANCE.minZoomMultiplier,
-                    ZoomConfig.INSTANCE.maxZoomMultiplier
-            );
+            heldMultiplier = startingMultiplier();
         }
 
         active = shouldZoom;
@@ -31,7 +27,7 @@ final class ZoomController {
         active = false;
         currentMultiplier = 1.0f;
         targetMultiplier = 1.0f;
-        heldMultiplier = ZoomConfig.INSTANCE.baseZoomMultiplier;
+        heldMultiplier = startingMultiplier();
         currentBarsPercent = 0f;
         targetBarsPercent = 0f;
         lastFrameNanos = 0L;
@@ -103,5 +99,14 @@ final class ZoomController {
 
     private static float clamp(float value, float min, float max) {
         return Math.max(min, Math.min(max, value));
+    }
+
+    private static float startingMultiplier() {
+        float zoom = ZoomConfig.INSTANCE.startingZoom;
+        return clamp(
+                zoom <= 0f ? 1.0f : 1.0f / zoom,
+                ZoomConfig.INSTANCE.minZoomMultiplier,
+                ZoomConfig.INSTANCE.maxZoomMultiplier
+        );
     }
 }

@@ -23,6 +23,14 @@ public final class ModMenuIntegration implements ModMenuApi {
             ConfigEntryBuilder eb = builder.entryBuilder();
 
             cat.addEntry(
+                eb.startFloatField(Text.translatable("cinematiczoom.option.starting_zoom"), cfg.startingZoom)
+                  .setMin(1f).setMax(10f)
+                  .setTooltip(Text.translatable("cinematiczoom.option.starting_zoom.tooltip"))
+                  .setSaveConsumer(v -> cfg.startingZoom = v)
+                  .build()
+            );
+
+            cat.addEntry(
                 eb.startFloatField(Text.translatable("cinematiczoom.option.bars_percent"), cfg.barsPercent)
                   .setMin(0f).setMax(50f)
                   .setTooltip(Text.translatable("cinematiczoom.option.bars_percent.tooltip"))
