@@ -54,6 +54,13 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             cat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.spyglass_only"), cfg.spyglassOnly)
+                  .setTooltip(Component.translatable("cinematiczoom.option.spyglass_only.tooltip"))
+                  .setSaveConsumer(v -> cfg.spyglassOnly = v)
+                  .build()
+            );
+
+            cat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.mouse_wheel_enabled"), cfg.mouseWheelEnabled)
                   .setTooltip(Component.translatable("cinematiczoom.option.mouse_wheel_enabled.tooltip"))
                   .setSaveConsumer(v -> cfg.mouseWheelEnabled = v)

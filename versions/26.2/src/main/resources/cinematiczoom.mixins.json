@@ -4,12 +4,14 @@
 	"package": "mix.cinematiczoom.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
- 		  "CameraMixin",
-    "MouseMixin",
-    "OptionsMixin",
-    "MinecraftMixin",
-		  "GuiMixin"
- 		],
+		"AbstractClientPlayerMixin",
+		"CameraMixin",
+		"GuiMixin",
+		"MinecraftMixin",
+		"MouseMixin",
+		"OptionsMixin",
+		"SpyglassOverlayMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}

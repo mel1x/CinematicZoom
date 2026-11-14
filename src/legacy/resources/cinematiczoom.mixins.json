@@ -4,10 +4,12 @@
 	"package": "mix.cinematiczoom.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
- 		  "GameRendererMixin",
- 		  "MouseMixin",
-		  "InGameHudMixin"
- 		],
+		"AbstractClientPlayerEntityMixin",
+		"GameRendererMixin",
+		"InGameHudMixin",
+		"MouseMixin",
+		"SpyglassOverlayMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}

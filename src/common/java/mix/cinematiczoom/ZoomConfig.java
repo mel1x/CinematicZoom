@@ -26,6 +26,7 @@ public final class ZoomConfig {
     public boolean hideHudDuringZoom = true;
     public boolean enableCinematicCamera = true;
     public boolean toggleMode = false;
+    public boolean spyglassOnly = false;
 
     public float startingZoom = 3.0f;
     public float minZoomMultiplier = 0.10f;
@@ -88,6 +89,7 @@ public final class ZoomConfig {
         hideHudDuringZoom = other.hideHudDuringZoom;
         enableCinematicCamera = other.enableCinematicCamera;
         toggleMode = other.toggleMode;
+        spyglassOnly = other.spyglassOnly;
         startingZoom = other.startingZoom;
         minZoomMultiplier = other.minZoomMultiplier;
         maxZoomMultiplier = other.maxZoomMultiplier;

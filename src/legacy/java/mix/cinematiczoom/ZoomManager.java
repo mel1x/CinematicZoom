@@ -26,7 +26,10 @@ public final class ZoomManager {
         boolean isKeyDown = canInteract && isZoomKeyPressed(client, key);
         boolean wantZoom;
 
-        if (ZoomConfig.INSTANCE.toggleMode) {
+        if (ZoomConfig.INSTANCE.spyglassOnly) {
+            toggled = false;
+            wantZoom = inWorld && client.player.isUsingSpyglass();
+        } else if (ZoomConfig.INSTANCE.toggleMode) {
             if (isKeyDown && !wasKeyDown) {
                 toggled = !toggled;
             }
@@ -89,6 +92,10 @@ public final class ZoomManager {
 
     public static boolean isZoomActive() {
         return ZOOM.isActive();
+    }
+
+    public static boolean suppressVanillaSpyglass() {
+        return ZoomConfig.INSTANCE.spyglassOnly;
     }
 
     public static boolean onWheel(double vertical) {

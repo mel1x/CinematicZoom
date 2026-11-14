@@ -30,5 +30,8 @@
   "cinematiczoom.option.cinematic_cam.tooltip": "Temporarily enables smooth camera (cinematic camera) during zoom.",
 
   "cinematiczoom.option.toggle_mode": "Toggle zoom",
-  "cinematiczoom.option.toggle_mode.tooltip": "Press to toggle zoom on/off instead of holding the key."
+  "cinematiczoom.option.toggle_mode.tooltip": "Press to toggle zoom on/off instead of holding the key.",
+
+  "cinematiczoom.option.spyglass_only": "Spyglass only",
+  "cinematiczoom.option.spyglass_only.tooltip": "Zoom works only while looking through a spyglass. The zoom key is ignored, and the vanilla spyglass zoom and overlay are replaced by Cinematic Zoom."
 }

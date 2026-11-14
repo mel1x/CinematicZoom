@@ -8,15 +8,15 @@ Smooth cinematic zoom for Minecraft Fabric 1.20.1–26.3 with animated black bar
 
 | Minecraft | Mod version | Java |
 | --- | --- | --- |
-| 1.20.1 | 1.3 | 17+ |
-| 1.21.1 | 1.3 | 21+ |
-| 1.21.2–1.21.4 | 1.3 | 21+ |
-| 1.21.5–1.21.6 | 1.3 | 21+ |
-| 1.21.7–1.21.8 | 1.3 | 21+ |
-| 1.21.9–1.21.11 | 1.3 | 21+ |
-| 26.1–26.1.2 | 1.3 | 25+ |
-| 26.2–26.2.2 | 1.3 | 25+ |
-| 26.3 | 1.3 | 25+ |
+| 1.20.1 | 1.4 | 17+ |
+| 1.21.1 | 1.4 | 21+ |
+| 1.21.2–1.21.4 | 1.4 | 21+ |
+| 1.21.5–1.21.6 | 1.4 | 21+ |
+| 1.21.7–1.21.8 | 1.4 | 21+ |
+| 1.21.9–1.21.11 | 1.4 | 21+ |
+| 26.1–26.1.2 | 1.4 | 25+ |
+| 26.2–26.2.2 | 1.4 | 25+ |
+| 26.3 | 1.4 | 25+ |
 
 All ports live on `main`. The Gradle build keeps shared logic in common source sets and adds only the API-specific classes required by each Minecraft version.
 
@@ -38,7 +38,7 @@ On Linux or macOS:
 
 The nine release JARs are collected in `build/libs/`. Range builds include the
 full supported interval in the filename, for example
-`cinematiczoom-1.21.2-1.21.4-1.2.jar`.
+`cinematiczoom-1.21.2-1.21.4-1.4.jar`.
 
 Build only one target when developing:
 
@@ -73,6 +73,8 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 - Optional mouse-wheel zoom adjustment.
 - Optional HUD/crosshair hiding.
 - Optional cinematic camera while zooming.
+- Optional spyglass-only mode: zoom works only while looking through a spyglass and replaces the vanilla spyglass zoom and overlay.
+- Works inside Flashback replays.
 - English and Russian translations.
 - Mod Menu and Cloth Config integration.
 

@@ -1,26 +1,21 @@
 package mix.cinematiczoom.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import mix.cinematiczoom.ZoomManager;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(GameRenderer.class)
+@Mixin(value = GameRenderer.class, priority = 1500)
 public class GameRendererMixin {
 
-    @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F",
-            at = @At("RETURN"), cancellable = true)
-    private void cinematiczoom$applyZoom(Camera camera, float tickDelta, boolean changingFov,
-                                         CallbackInfoReturnable<Float> cir) {
+    @WrapMethod(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F")
+    private float cinematiczoom$applyZoom(Camera camera, float tickDelta, boolean changingFov, Operation<Float> original) {
+        float fov = original.call(camera, tickDelta, changingFov);
         ZoomManager.frameUpdate();
 
-        float fov = cir.getReturnValue();
         double mul = ZoomManager.getCurrentFovMul();
-        if (mul != 1.0) {
-            cir.setReturnValue((float) (fov * mul));
-        }
+        return mul != 1.0 ? (float) (fov * mul) : fov;
     }
 }

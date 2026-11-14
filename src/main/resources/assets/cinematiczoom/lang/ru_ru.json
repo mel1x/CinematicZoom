@@ -11,6 +11,9 @@
   "cinematiczoom.config.title": "Cinematic Zoom — Настройки",
   "cinematiczoom.config.category.general": "Общие",
 
+  "cinematiczoom.option.starting_zoom": "Начальный зум (1-10x)",
+  "cinematiczoom.option.starting_zoom.tooltip": "Степень приближения при начале зума. 1x оставляет обычный вид, но показывает чёрные полосы.",
+
   "cinematiczoom.option.bars_percent": "Высота чёрных полос, %",
   "cinematiczoom.option.bars_percent.tooltip": "Процент высоты экрана для каждой полосы (верх/низ). Диапазон 0–50%.",
 
@@ -27,5 +30,8 @@
   "cinematiczoom.option.cinematic_cam.tooltip": "Временно включает кинематографическую камеру во время зума.",
 
   "cinematiczoom.option.toggle_mode": "Режим переключения (Toggle)",
-  "cinematiczoom.option.toggle_mode.tooltip": "Переключать зум нажатием клавиши вместо её удержания."
+  "cinematiczoom.option.toggle_mode.tooltip": "Переключать зум нажатием клавиши вместо её удержания.",
+
+  "cinematiczoom.option.spyglass_only": "Только с подзорной трубой",
+  "cinematiczoom.option.spyglass_only.tooltip": "Зум работает только при использовании подзорной трубы. Клавиша зума игнорируется, а ванильное приближение и оверлей трубы заменяются на Cinematic Zoom."
 }
